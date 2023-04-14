@@ -39,7 +39,7 @@ def saveData(lights):
         
         data = light.split('=')        
         
-        sql = "INSERT INTO light (devicename, light, timestamp) VALUES('" + data[0] + "', " + data[1] + ", datetime('now', 'localtime'))"
+        sql = "INSERT INTO light (devicename, light, timestamp) VALUES('{}', '{}', datetime('now', 'localtime'))".format(data[0], data[1])
         c.execute(sql)
     
     conn.commit()

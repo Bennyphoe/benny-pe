@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>Cloud Server</title>
+        <link rel="stylesheet" type="text/css" href="../static/style.css"></link>
+    </head>
+    <body>
+        <h1>Cloud Server</h1>
+        <table>
+            <tr>   
+                <th>id</th>
+                <th>devicename</th>
+                <th>light</th>
+                <th>timestamp</th>
+            </tr>
+            {% for lineItem in results %}
+            <tr>
+                <td>{{lineItem["id"]}}</td>
+                <td>{{lineItem["devicename"]}}</td>
+                <td>{{lineItem["light"]}}</td>
+                <td>{{lineItem["timestamp"]}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>

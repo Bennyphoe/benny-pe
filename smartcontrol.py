@@ -32,7 +32,7 @@ def main():
                 
         broker = 'broker.emqx.io'
         port = 1883
-        topic = "/is4151-is5451/mockpe/smartlight"
+        topic = "/benny/pe"
         client_id = f'python-mqtt-{random.randint(0, 10000)}'
         username = 'emqx'
         password = 'public'        
