@@ -28,7 +28,7 @@ def main():
         
         smartlight = 'off'
         
-        if cluster_label == '0':       
+        if cluster_label == '1':       
         
             smartlight = 'on'
                 
