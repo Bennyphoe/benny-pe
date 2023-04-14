@@ -110,7 +110,7 @@ def cloudrelay():
     
     conn = sqlite3.connect('light.db')
     
-    base_uri = 'http://169.254.53.99:5000/'
+    base_uri = 'http://192.168.137.1:5000/'
     globallight_uri = base_uri + 'api/globallight'
     headers = {'content-type': 'application/json'}
     
