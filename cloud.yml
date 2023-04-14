@@ -1,0 +1,77 @@
+swagger: "2.0"
+info:
+  description: This is the swagger file that goes with our server code
+  version: "1.0.0"
+  title: Swagger REST Article
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+
+basePath: "/api"
+
+# Paths supported by the server application
+paths:
+  /globallight:
+    get:
+      operationId: "globallight.read"
+      tags:
+        - "Global Light"
+      summary: "The light data structure supported by the server application"
+      description: "Read the list of light"
+      responses:
+        200:
+          description: "Successful read light list operation"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id:
+                  type: "number"
+                devicename:
+                  type: "string"
+                light:
+                  type: "number"
+                timestamp:
+                  type: "string"
+    put:
+      operationId: "globallight.create"
+      tags:
+        - Global Light
+      summary: Create a light record in the database
+      description: Create a new light in the database
+      parameters:
+        - name: globallight
+          in: body
+          description: Light record to create
+          required: True
+          schema:
+            type: object
+            properties:
+              devicename:
+                  type: "string"
+              light:
+                  type: "number"
+              timestamp:
+                  type: "string"
+      responses:
+        200:
+          description: Successfully created light record in database
+  
+  /lightcluster:
+    get:
+      operationId: "globallight.cluster"
+      tags:
+        - Get cluster label of light
+      summary: "Get cluster label of light"
+      description: "Get cluster label of light"
+      parameters:
+        - name: light
+          in: query
+          description: Light
+          required: true
+          type: number        
+        
+      responses:
+        200:
+          description: "Successful prediction"          
