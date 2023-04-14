@@ -20,12 +20,12 @@ def create():
     return globallight.create(payload)
 
 @app.route('/api/globallight', methods=["GET"])
-def create():
+def get():
     return globallight.read()
 
-@app.route('/api/lightcluster', methods=["GET"])
+@app.route('/api/lightcluster', methods=["POST"])
 def cluster():
-    payload = request.json()
+    payload = request.get_json()
     light = payload["light"]
     return globallight.cluster(light)
 

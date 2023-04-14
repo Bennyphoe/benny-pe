@@ -1,7 +1,7 @@
 import sys
 import random
 import time
-
+import json
 import requests
 
 import paho.mqtt.client as mqtt
@@ -18,9 +18,11 @@ def main():
         print('Light to cluster: ' + arg)
         
         base_uri = 'http://localhost:5000/'
-        lightcluster_uri = base_uri + 'api/lightcluster'        
-        req = requests.get(lightcluster_uri, params={'light': arg})
-        cluster_label = str(req.text).replace('"', '')
+        lightcluster_uri = base_uri + 'api/lightcluster'
+        headers = {'content-type': 'application/json'}       
+        res = requests.post(lightcluster_uri, data = json.dumps({"light": arg}), headers = headers)
+        print(res)
+        cluster_label = str(res.text).replace('"', '')
         cluster_label = cluster_label.strip()
         print('Cluster Label: ' + cluster_label)
         

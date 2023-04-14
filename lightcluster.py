@@ -20,7 +20,7 @@ def main():
 
         try:                        
             
-            conn = sqlite3.connect('light.db')
+            conn = sqlite3.connect('lightcloud.db')
     
             c = conn.cursor()
             c.execute('SELECT id, devicename, light, timestamp FROM light ORDER BY id ASC')
