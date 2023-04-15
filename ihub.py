@@ -9,10 +9,12 @@ import requests
 import json
 
 import paho.mqtt.client as mqtt
-
+from Adafruit_BME280 import *
 import _thread as thread
 
+bme280Sensor = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
 
+HUB_NAME = "fogProcessor"
 
 def sendCommand(command):
         
@@ -30,22 +32,34 @@ def waitResponse():
 
 
 
-def saveData(lights):
-    
+def saveData(listSensorValues):
     conn = sqlite3.connect('light.db')
     c = conn.cursor()
     
-    for light in lights:
+    #retrieve the fog data first
+    for x in len(listSensorValues):
+        data = listSensorValues[x].split("=")
+        sensorData = data[1].split("-")
+        deviceName = data[0]
+        if "fogProcessor" in deviceName:
+            atemp = sensorData[0]
+            ahum = sensorData[1]
         
-        data = light.split('=')        
-        
-        sql = "INSERT INTO light (devicename, light, timestamp) VALUES('{}', '{}', datetime('now', 'localtime'))".format(data[0], data[1])
-        c.execute(sql)
     
-    conn.commit()
+    for sensorValue in listSensorValues:
+        
+        data = sensorValue.split("=")
+        deviceName = data[0]
+        sensorData = data[1]
+        if "fogProcessor" not in deviceName:
+            alight = sensorData
+            sql = "INSERT INTO light (devicename, abright, atemp, ahum, timestamp) VALUES('{}', '{}', '{}'. '{}' datetime('now', 'localtime'))".format(deviceName, alight, atemp, ahum)
+            c.execute(sql)
+            conn.commit()
+    
     conn.close()
     
-    lights.clear()
+    listSensorValues.clear()
 
 
 
@@ -95,12 +109,17 @@ def rhub():
                         
                         strSensorValues = waitResponse()
                         time.sleep(0.1)
-
+                    # ["togez=121"]
                     listSensorValues = strSensorValues.split(',')
 
                     for sensorValue in listSensorValues:
                         
                         print('rhub: {}'.format(sensorValue))
+                
+                    # retrieve BME280 values here
+                    temperature = bme280Sensor.read_temperature
+                    humidity = bme280Sensor.read_humidity
+                    listSensorValues.append("{}={}-{}".format(HUB_NAME, temperature, humidity))
                     
                     saveData(listSensorValues)
 
@@ -123,18 +142,19 @@ def cloudrelay():
         print('Relaying data to cloud server...')
                 
         c = conn.cursor()
-        c.execute('SELECT id, devicename, light, timestamp FROM light WHERE tocloud = 0')
+        c.execute('SELECT id, devicename, abright, atemp, ahum, timestamp FROM light WHERE tocloud = 0')
         results = c.fetchall()
         c = conn.cursor()
                 
         for result in results:
                     
-            print('Relaying id={}; devicename={}; light={}; timestamp={}'.format(result[0], result[1], result[2], result[3]))
+            print('Relaying id={}; devicename={}; abright={}; atemp={}; ahum={}; timestamp={}'.format(result[0], result[1], result[2], result[3], result[4], result[5]))
             
             glight = {
                 'devicename':result[1],
-                'light':result[2],
-                'timestamp':result[3]
+                'abright':result[2],
+                'atemp':result[3],
+                'ahum': result[4]
             }
             req = requests.put(globallight_uri, headers = headers, data = json.dumps(glight))
             
@@ -152,9 +172,10 @@ def on_message(client, userdata, msg):
     if smartlight == 'on':
         
         GPIO.output(redLedPin, True)
+        GPIO.output(greenLedPin, False)
         
     else:
-    
+        GPIO.output(greenLedPin, True)
         GPIO.output(redLedPin, False)
 
 
@@ -183,9 +204,12 @@ def init():
     GPIO.setmode(GPIO.BOARD)
     
     global redLedPin
+    global greenLedPin
     redLedPin = 11
+    greenLedPin = 13
     GPIO.setup(redLedPin, GPIO.OUT)
     GPIO.output(redLedPin, False)
+    GPIO.output(greenLedPin, False)
 
 
 

@@ -23,7 +23,7 @@ let commandValue = ""
 let commandKey = ""
 let buffer: string[] = []
 let state = 0
-radio.setGroup(8)
+radio.setGroup(157)
 radio.setTransmitPower(7)
 radio.setTransmitSerialNumber(true)
 basic.showIcon(IconNames.Yes)

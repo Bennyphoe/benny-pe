@@ -44,7 +44,7 @@ let data = ""
 let buffer: string[] = []
 handshakeStartTime = 0
 commandStartTime = 0
-radio.setGroup(8)
+radio.setGroup(157)
 radio.setTransmitSerialNumber(true)
 radio.setTransmitPower(7)
 serial.redirectToUSB()
