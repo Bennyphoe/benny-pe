@@ -12,13 +12,14 @@ def read():
     
     for result in results:
 
-        readings.append({'id':result[0],'devicename':result[1],'abight':result[2], 'atemp': result[3], 'ahum': result[4], 'timestamp':result[5]})
+        readings.append({'id':result[0],'devicename':result[1],'abright':result[2], 'atemp': result[3], 'ahum': result[4], 'timestamp':result[5]})
     conn.close()
     return readings
 
 
 
 def create(payload):
+    
     conn = sqlite3.connect('lightcloud.db')
     devicename = payload.get('devicename', None)
     abright = payload.get('abright', None)
@@ -27,7 +28,7 @@ def create(payload):
     timestamp = payload.get('timestamp', None)
     
     c = conn.cursor()    
-    sql = "INSERT INTO light (devicename, abright, atemp, ahum, timestamp) VALUES('{}', {}, '{}')".format(devicename, abright, atemp, ahum, timestamp)
+    sql = "INSERT INTO light (devicename, abright, atemp, ahum, timestamp) VALUES('{}', '{}', '{}', '{}', '{}')".format(devicename, abright, atemp, ahum, timestamp)
     print(sql)
     c.execute(sql)
     conn.commit()

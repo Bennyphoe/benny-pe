@@ -172,12 +172,12 @@ def on_message(client, userdata, msg):
     
     if smartlight == 'on':
         
-        GPIO.output(redLedPin, True)
-        GPIO.output(greenLedPin, False)
+        GPIO.output(redLedPin, False)
+        GPIO.output(greenLedPin, True)
         
     else:
-        GPIO.output(greenLedPin, True)
-        GPIO.output(redLedPin, False)
+        GPIO.output(greenLedPin, False)
+        GPIO.output(redLedPin, True)
 
 
 

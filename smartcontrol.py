@@ -32,7 +32,7 @@ def main():
         
         if cluster_label == '1':       
         
-            smartlight = 'on'
+            smartlight = 'off'
                 
         broker = 'broker.emqx.io'
         port = 1883
