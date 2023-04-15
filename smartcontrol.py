@@ -16,11 +16,13 @@ def main():
         
         arg = sys.argv[1]
         print('Light to cluster: ' + arg)
+        values = arg.split(",")
+        
         
         base_uri = 'http://localhost:5000/'
         lightcluster_uri = base_uri + 'api/lightcluster'
         headers = {'content-type': 'application/json'}       
-        res = requests.post(lightcluster_uri, data = json.dumps({"light": arg}), headers = headers)
+        res = requests.post(lightcluster_uri, data = json.dumps({"abright": values[0], "atemp": values[1], "ahum": values[2]}), headers = headers)
         print(res)
         cluster_label = str(res.text).replace('"', '')
         cluster_label = cluster_label.strip()

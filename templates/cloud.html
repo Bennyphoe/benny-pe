@@ -9,14 +9,18 @@
             <tr>   
                 <th>id</th>
                 <th>devicename</th>
-                <th>light</th>
+                <th>abright</th>
+                <th>atemp</th>
+                <th>ahum</th>
                 <th>timestamp</th>
             </tr>
             {% for lineItem in readings %}
             <tr>
                 <td>{{lineItem["id"]}}</td>
                 <td>{{lineItem["devicename"]}}</td>
-                <td>{{lineItem["light"]}}</td>
+                <td>{{lineItem["abright"]}}</td>
+                <td>{{lineItem["atemp"]}}</td>
+                <td>{{lineItem["ahum"]}}</td>
                 <td>{{lineItem["timestamp"]}}</td>
             </tr>
             {% endfor %}

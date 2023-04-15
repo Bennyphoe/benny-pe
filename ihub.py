@@ -154,7 +154,8 @@ def cloudrelay():
                 'devicename':result[1],
                 'abright':result[2],
                 'atemp':result[3],
-                'ahum': result[4]
+                'ahum': result[4],
+                'timestamp': result[5]
             }
             req = requests.put(globallight_uri, headers = headers, data = json.dumps(glight))
             

@@ -5,48 +5,53 @@ from joblib import dump, load
 
 def read():
     conn = sqlite3.connect('lightcloud.db')
-    lights = []
+    readings = []
     c = conn.cursor()
-    c.execute('SELECT id, devicename, light, timestamp FROM light ORDER BY id ASC')
+    c.execute('SELECT id, devicename, abright, atemp, ahum, timestamp FROM light ORDER BY id DESC')
     results = c.fetchall()
     
     for result in results:
 
-        lights.append({'id':result[0],'devicename':result[1],'light':result[2],'timestamp':result[3]})
+        readings.append({'id':result[0],'devicename':result[1],'abight':result[2], 'atemp': result[3], 'ahum': result[4], 'timestamp':result[5]})
     conn.close()
-    return lights
+    return readings
 
 
 
 def create(payload):
     conn = sqlite3.connect('lightcloud.db')
     devicename = payload.get('devicename', None)
-    light = payload.get('light', None)
+    abright = payload.get('abright', None)
+    atemp = payload["atemp"]
+    ahum = payload["ahum"]
     timestamp = payload.get('timestamp', None)
     
     c = conn.cursor()    
-    sql = "INSERT INTO light (devicename, light, timestamp) VALUES('{}', {}, '{}')".format(devicename, light, timestamp)
+    sql = "INSERT INTO light (devicename, abright, atemp, ahum, timestamp) VALUES('{}', {}, '{}')".format(devicename, abright, atemp, ahum, timestamp)
     print(sql)
     c.execute(sql)
     conn.commit()
     conn.close()
-    return make_response('Global light record successfully created', 200)
+    return make_response('Global record successfully created', 200)
 
 
 
-def cluster(light):
+def cluster(values):
     
     try:
-    
-        print('here 1: ' + str(light))
+        print(values)
+        abright = values["abright"]
+        atemp = values["atemp"]
+        ahum = values["ahum"]
+        print('here 1: ' + abright + atemp + ahum)
         
-        # predict new temperature and humidity observation
+        # predict new temperature and humidity and lightlevel observation
         kmeans = load('lightcluster.joblib')
         print('here 2')
         # temperature, humidity
-        newX = [[light]]
+        newX = [[abright, atemp, ahum]]
         result = kmeans.predict(newX)
-        print('Cluster Light: light={}; cluster={}'.format(light, result[0]))
+        print('Cluster Light: values={}; cluster={}'.format(values, result[0]))
 
         return make_response(str(result[0]), 200)
         

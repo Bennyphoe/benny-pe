@@ -26,8 +26,7 @@ def get():
 @app.route('/api/lightcluster', methods=["POST"])
 def cluster():
     payload = request.get_json()
-    light = payload["light"]
-    return globallight.cluster(light)
+    return globallight.cluster(payload)
 
 # If we're running in stand alone mode, run the application
 if __name__ == '__main__':

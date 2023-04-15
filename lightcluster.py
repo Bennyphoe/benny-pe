@@ -23,30 +23,36 @@ def main():
             conn = sqlite3.connect('lightcloud.db')
     
             c = conn.cursor()
-            c.execute('SELECT id, devicename, light, timestamp FROM light ORDER BY id ASC')
+            c.execute('SELECT id, devicename, abright, atemp, ahum, timestamp FROM light ORDER BY id ASC')
             results = c.fetchall()
             
-            df = pd.DataFrame(columns=['id', 'devicename', 'light', 'timestamp'])
+            df = pd.DataFrame(columns=['id', 'devicenane', 'abright', 'atemp', 'ahum', 'timestamp'])
             # print(df)
             
             for result in results:                                
                 
-                df = df.append({'id': result[0], 'devicename': str(result[1]), 'light': result[2], 'timestamp': str(result[3])}, ignore_index=True)
+                df = df.append({'id': result[0], 'devicename': str(result[1]), 'abright': result[2], 'atemp': result[3], 'ahum': result[4], 'timestamp': str(result[5])}, ignore_index=True)
                 
             # print(df)
             
-            X = df['light'].values.reshape(-1,1)
+            X = df['abright'].values.reshape(-1,1)
+            X = df['atemp'].values.reshape(-1,1)
+            X = df['ahum'].values.reshape(-1,1)
             
             # print(X)
             
             kmeans = KMeans(n_clusters=2, random_state=0)
             kmeans = kmeans.fit(X)
-            result = pd.concat([df['light'], pd.DataFrame({'cluster':kmeans.labels_})], axis=1)
+            result = pd.concat([df['abright'], df['atemp']])
+            result = pd.concat([result, df['ahum']])
+            result = pd.concat([result, pd.DataFrame({'cluster':kmeans.labels_})], axis=1)
             
             # print(result)
             
             for cluster in result.cluster.unique():
-                print('{:d}\t{:.3f} ({:.3f})'.format(cluster, result[result.cluster==cluster].light.mean(), result[result.cluster==cluster].light.std()))
+                print('{:d}\t{:.3f} ({:.3f})'.format(cluster, result[result.cluster==cluster].abright.mean(), result[result.cluster==cluster].abright.std()))
+                print('{:d}\t{:.3f} ({:.3f})'.format(cluster, result[result.cluster==cluster].atemp.mean(), result[result.cluster==cluster].atemp.std()))
+                print('{:d}\t{:.3f} ({:.3f})'.format(cluster, result[result.cluster==cluster].ahum.mean(), result[result.cluster==cluster].ahum.std()))
             
             
             dump(kmeans, 'lightcluster.joblib')
