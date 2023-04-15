@@ -37,13 +37,13 @@ def saveData(listSensorValues):
     c = conn.cursor()
     
     #retrieve the fog data first
-    for x in len(listSensorValues):
-        data = listSensorValues[x].split("=")
+    for x in listSensorValues:
+        data = x.split("=")
         sensorData = data[1].split("-")
         deviceName = data[0]
         if "fogProcessor" in deviceName:
-            atemp = sensorData[0]
-            ahum = sensorData[1]
+            atemp = round(float(sensorData[0]), 3)
+            ahum = round(float(sensorData[1]), 3)
         
     
     for sensorValue in listSensorValues:
@@ -53,7 +53,7 @@ def saveData(listSensorValues):
         sensorData = data[1]
         if "fogProcessor" not in deviceName:
             alight = sensorData
-            sql = "INSERT INTO light (devicename, abright, atemp, ahum, timestamp) VALUES('{}', '{}', '{}'. '{}' datetime('now', 'localtime'))".format(deviceName, alight, atemp, ahum)
+            sql = "INSERT INTO light (devicename, abright, atemp, ahum, timestamp) VALUES('{}', '{}', '{}', '{}', datetime('now', 'localtime'))".format(deviceName, alight, atemp, ahum)
             c.execute(sql)
             conn.commit()
     
@@ -117,8 +117,8 @@ def rhub():
                         print('rhub: {}'.format(sensorValue))
                 
                     # retrieve BME280 values here
-                    temperature = bme280Sensor.read_temperature
-                    humidity = bme280Sensor.read_humidity
+                    temperature = bme280Sensor.read_temperature()
+                    humidity = bme280Sensor.read_humidity()
                     listSensorValues.append("{}={}-{}".format(HUB_NAME, temperature, humidity))
                     
                     saveData(listSensorValues)
@@ -208,6 +208,7 @@ def init():
     redLedPin = 11
     greenLedPin = 13
     GPIO.setup(redLedPin, GPIO.OUT)
+    GPIO.setup(greenLedPin, GPIO.OUT)
     GPIO.output(redLedPin, False)
     GPIO.output(greenLedPin, False)
 
